@@ -2,7 +2,7 @@ import React from 'react';
 import { Navbar, NavItem, Nav, NavDropdown, MenuItem } from 'react-bootstrap';
 
 
-export const PageNav = ({ username, roommates, house }) => {
+export const PageNav = ({ username, roommates, house, avatar }) => {
   return (
     <div>
       <Navbar inverse>
@@ -14,6 +14,7 @@ export const PageNav = ({ username, roommates, house }) => {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
+            <NavItem><img src={avatar} /></NavItem>
             <NavItem href="/logout">{username}</NavItem>
             <NavItem eventKey={2} href="/home">{house}</NavItem>
             <NavDropdown eventKey={3} title="See Roomates" id="basic-nav-dropdown">

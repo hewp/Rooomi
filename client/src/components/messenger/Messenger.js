@@ -32,7 +32,7 @@ export default class Messenger extends React.Component {
   render() {
     return (
       <div>
-        <MessageEntryForm username={this.props.username} house={this.props.house} socket={this.props.socket}/>
+        <MessageEntryForm username={this.props.username} house={this.props.house} socket={this.props.socket} />
         <MessageList messages={this.state.messages} />
       </div>
     );

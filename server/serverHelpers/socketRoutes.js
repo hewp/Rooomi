@@ -42,4 +42,10 @@ module.exports = (socket) => {
       socket.emit('addMessage', message);
     });
   });
+
+  socket.on('addHouse', (userObj) => {
+    userController.updateHouse(userObj, (user) => {
+      socket.emit('addHouse', user);
+    });
+  });
 };

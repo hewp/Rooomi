@@ -23,4 +23,12 @@ module.exports = {
       .where('house').equals(house)
       .then(callback);
   },
+
+  updateHouse(userObj, callback) {
+    User
+      .update({ username: userObj.username },
+        { $set: { house: userObj.house } },
+      () => User.findOne({ username: userObj.username })
+      .then((user) => callback(user)));
+  },
 };

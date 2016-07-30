@@ -4,6 +4,7 @@ import { PageNav } from './taskboard/Nav';
 import Messenger from './messenger/Messenger.js';
 import { Tabs, Tab } from 'react-bootstrap';
 import { TaskManager } from './taskboard/TaskManager.js';
+import { Modal, Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 
 
 export default class App extends React.Component {
@@ -15,7 +16,45 @@ export default class App extends React.Component {
       house: '',
       tasks: [],
       roommates: [],
+      avatar: '',
+      showModal: false,
+      fbID: '',
     };
+  }
+
+  close() {
+    this.setState({
+      showModal: false,
+    });
+  }
+
+  open() {
+    this.setState({
+      showModal: true,
+    });
+  }
+
+  handleHouseChange(e) {
+    this.setState({
+      house: e.target.value,
+    });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    const house = this.state.house;
+    const username = this.state.username;
+
+    this.props.socket.emit('addHouse', {
+      username: this.state.username,
+      house: this.state.house,
+    });
+
+    this.props.socket.emit('getAllUsers', this.state.house);
+    this.props.socket.emit('getAllTasks', this.state.house);
+
+    this.close();
   }
 
   componentDidMount() {
@@ -29,7 +68,13 @@ export default class App extends React.Component {
       self.setState({
         house: data.house,
         username: data.username,
+        avatar: data.avatar,
+        fbID: data.fbID,
       });
+      console.log(self.state.house);
+      if( self.state.fbID && !self.state.house ) {
+        self.open();
+      }
       socket.emit('getAllUsers', this.state.house);
       socket.emit('getAllTasks', this.state.house);
       socket.emit('getAllMessages', this.state.house);
@@ -66,6 +111,13 @@ export default class App extends React.Component {
         });
       }
     });
+
+    socket.on('addHouse', (user) => {
+      this.setState({
+        house: user.house,
+      });
+    });
+
   }
 
   render() {
@@ -77,9 +129,31 @@ export default class App extends React.Component {
             <TaskManager tasks={this.state.tasks} roommates={this.state.roommates} username={this.state.username} house={this.state.house} socket={this.props.socket} />
           </Tab>
           <Tab eventKey={2} title="Messenger">
-            <Messenger username={this.state.username} house={this.state.house} socket={this.props.socket} />
+            <Messenger username={this.state.username} house={this.state.house} socket={this.props.socket} avatar={this.state.avatar}/>
           </Tab>
         </Tabs>
+        <Modal show={this.state.showModal} onHide={this.close.bind(this)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Subscribe to a House</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form>
+              <FormGroup >
+                <ControlLabel>Enter a House Name</ControlLabel>
+                <FormControl
+                  type="text"
+                  value={this.state.house}
+                  placeholder="Enter task description here"
+                  onChange={this.handleHouseChange.bind(this)}
+                />
+              </FormGroup>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.handleSubmit.bind(this)} bsStyle="success">Subscribe</Button>
+            <Button onClick={this.close.bind(this)}>Close</Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
