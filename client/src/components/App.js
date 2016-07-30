@@ -71,8 +71,8 @@ export default class App extends React.Component {
         avatar: data.avatar,
         fbID: data.fbID,
       });
-      console.log(self.state.house);
-      if( self.state.fbID && !self.state.house ) {
+
+      if ( self.state.fbID && !self.state.house ) {
         self.open();
       }
       socket.emit('getAllUsers', this.state.house);

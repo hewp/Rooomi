@@ -2,6 +2,8 @@ const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 const User = require('../db/user/userModel.js');
 const FBStrategy = require('passport-facebook').Strategy;
+// const token;
+// const ip;
 
 passport.use(new Strategy(
   (username, password, cb) => {
@@ -19,9 +21,13 @@ passport.use(new FBStrategy({
   clientSecret: 'f9a6e6f6a452fb18fa720c89d5ced750',
   callbackURL: '/login/facebook/return',
   profileFields: ['id', 'first_name', 'photos', 'emails', 'displayName', 'about', 'gender'],
+  auth_type: 'reauthenticate',
+  // passReqToCallback: true,
 },
   (accessToken, refreshToken, profile, cb) => {
-    console.log(profile.displayName);
+    // console.log(req);
+    // ip = req.ip;
+    // token = accessToken;
     User.findOne({ fbID: profile.id }).exec()
     .then((user) => {
       if (!user) {

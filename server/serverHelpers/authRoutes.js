@@ -51,7 +51,9 @@ module.exports = (app) => {
   });
 
   app.get('/logout', (req, res) => {
+    req.session.destroy();
     req.logout();
+    //res.redirect(`https://www.facebook.com/logout.php?next=${auth.ip}/logout&access_token=${auth.token}`);
     res.redirect('/');
   });
 };
